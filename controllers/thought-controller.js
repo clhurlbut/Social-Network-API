@@ -13,7 +13,7 @@ const thoughtController = {
         Thoughts.findOne({ _id: params.id })
             .then(dbThoughts => {
                 if (!dbThoughts) {
-                    return res.status(404).json({ message: 'No thought found :(' });
+                    return res.status(404).json({ message: 'No thought found!' });
                 }
                 res.json(dbThoughts)
             })
@@ -33,7 +33,7 @@ const thoughtController = {
             })
             .then(dbUser => {
                 if (!dbUser) {
-                    return res.status(404).json({ message: 'No User with this ID!' });
+                    return res.status(404).json({ message: 'No user found!' });
                 }
                 res.json(dbUser);
             })
@@ -43,7 +43,7 @@ const thoughtController = {
         Thoughts.findOneAndUpdate({ _id: params.id }, body, { new: true })
             .then(dbThoughts => {
                 if (!dbThoughts) {
-                    return res.status(404).json({ message: 'No thought found to update!' });
+                    return res.status(404).json({ message: 'No thought found!' });
                 }
                 res.json(dbThoughts);
             })
@@ -83,7 +83,7 @@ const thoughtController = {
         )
             .then((dbReaction) => {
                 if (!dbReaction) {
-                    return res.status(404).json({ message: `No reaction found with ID: ${params.reactionID}` });
+                    return res.status(404).json({ message: `No reaction found!` });
                 }
                 res.json(dbReaction);
             })
