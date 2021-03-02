@@ -50,16 +50,15 @@ const thoughtController = {
             .catch(err => res.status(400).json(err));
     },
     deleteThought({ params }, res) {
-        Thoughts.findOneAndDelete({ _id: params.thoughtId })
-            .then(dbThoughts => {
+        Thoughts.findOneAndDelete({ _id: params.id })
+            .then((dbThoughts) => {
                 if (!dbThoughts) {
-                    return res.status(404).json({ message: 'No thought found!' });
+                    return res.status(404).json({ message: `No thought found!` });
                 }
-                return User.findOneAndUpdate(
-                    { _id: params.userId },
-                    { $pull: { thought: params.thoughtId } },
-                    { new: true }
-                );
+                res.json(dbThoughts);
+            })
+            .catch((err) => {
+                res.status(500).json(err);
             });
     },
     addReaction({ params, body }, res) {
@@ -68,23 +67,30 @@ const thoughtController = {
             { $push: { reactions: body } },
             { new: true }
         )
-            .then(dbUser => {
-                if (!dbUser) {
-                    return res.status(404).json({ message: 'No user found!' });
+            .then(dbReaction => {
+                if (!dbReaction) {
+                    return res.status(404).json({ message: 'No reaction found!' });
                 }
-                res.json(dbUser);
+                res.json(dbReaction);
             })
             .catch(err => res.json(err));
     },
     deleteReaction({ params }, res) {
-        Thoughts.findByIdAndUpdate(
+        Thoughts.findOneAndUpdate(
             { _id: params.thoughtId },
             { $pull: { reactions: { reactionId: params.reactionId } } },
             { new: true }
         )
-            .then(dbUser => res.json(dbUser))
-            .catch(err => res.json(err));
-    }
+            .then((dbReaction) => {
+                if (!dbReaction) {
+                    return res.status(404).json({ message: `No reaction found with ID: ${params.reactionID}` });
+                }
+                res.json(dbReaction);
+            })
+            .catch((err) => {
+                res.status(500).json(err);
+            });
+    },
 };
 
 module.exports = thoughtController;
